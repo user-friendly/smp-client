@@ -1,0 +1,6 @@
+# Project specific.
+vendor/
+*.sock
+local.tin
+tests/.phpunit.cache
+doc/

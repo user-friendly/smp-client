@@ -1,0 +1,37 @@
+{
+	"name" : "user-friendly/smp-client",
+	"description" : "Simple MUD in PHP Client",
+	"type" : "project",
+	"version": "1.0.0-alpha3",
+	"license" : "proprietary",
+	"authors" : [{
+			"name" : "Plamen Ivanov",
+			"email" : "pivanov@user-friendly.dev"
+		}
+	],
+	"minimum-stability" : "dev",
+	"prefer-stable" : true,
+	"require" : {
+		"php" : "^8.1",
+		"symfony/event-dispatcher" : "^6.4",
+		"symfony/config" : "^6.4",
+		"symfony/yaml" : "^6.4",
+		"monolog/monolog" : "^3.0",
+		"symfony/runtime": "^6.4"
+	},
+	"require-dev": {
+		"symfony/console": "^6.4"
+	},
+	"autoload" : {
+		"psr-4" : {
+			"Smp\\" : "Smp/",
+			"Smp\\tests\\" : "tests/",
+			"Smp\\scripts\\" : "scripts/"
+		}
+	},
+	"config": {
+		"allow-plugins": {
+			"symfony/runtime": true
+		}
+	}
+}
