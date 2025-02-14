@@ -102,7 +102,10 @@ class Client {
       }
       
       if ($input = $this->readInput()) {
-        foreach (\preg_split("/\n|;/", $input) as $line) {
+        foreach (\array_filter(\preg_split("/\n|;/", $input)) as $line) {
+          if (!$line) {
+            continue;
+          }
           if ($line[0] === '\\') {
             $line = \trim(\substr($line, 1));
             if (\in_array($line, $cmd_disconnect)) {
@@ -113,11 +116,18 @@ class Client {
               $this->logger->error("Client command `$line` not found.");
             }
           }
-          else if ($line) {
-            $this->connection->append($line);
+          else {
+            $this->connection->append("$line\n");
           }
         }
         $this->printPrompt();
+      }
+      
+      // TODO This is only for the case when input is piped.
+      if (\feof($this->inputFd)) {
+        $this->print("\n");
+        $this->logger->info("End of input. Disconnect.");
+        break;
       }
       
       $this->process->yield();
