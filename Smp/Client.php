@@ -9,7 +9,6 @@
 
 namespace Smp;
 
-use Smp\Logger\LoggerFactory;
 use Smp\Logger\LoggerTrait;
 use Smp\Network\Connection;
 
@@ -91,6 +90,8 @@ class Client {
     
     $this->connect();
     
+    $cmd_disconnect = ["quit", "exit", "disconnect"];
+    
     while ($this->connection->isValid()) {
       $this->connection->receive();
       $this->connection->send();
@@ -101,7 +102,21 @@ class Client {
       }
       
       if ($input = $this->readInput()) {
-        $this->connection->append($input);
+        foreach (\preg_split("/\n|;/", $input) as $line) {
+          if ($line[0] === '\\') {
+            $line = \trim(\substr($line, 1));
+            if (\in_array($line, $cmd_disconnect)) {
+              $this->logger->warning("Client-side disconnect.");
+              break 2;
+            }
+            else {
+              $this->logger->error("Client command `$line` not found.");
+            }
+          }
+          else if ($line) {
+            $this->connection->append($line);
+          }
+        }
         $this->printPrompt();
       }
       
